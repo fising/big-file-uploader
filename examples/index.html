@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>上传测试页面</title>
+</head>
+<body>
+<div id="progressBar" style="border-bottom:4px solid green;width:0;"></div>
+<input type="file" name="file" id="file"/><br/>
+<button id="button">点击上传</button>
+
+<script type="text/javascript" src="//code.jquery.com/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" src="../src/BigFileUploader.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#button').click(function () {
+            (new BigFileUploader($('#file').get(0), {
+                url: './upload.php',
+                error: function (o) {
+                    alert(o.message);
+                },
+                success: function (o) {
+                    alert(o.message);
+                },
+                progress: function (o) {
+                    console.log(o.percent);
+                    $('#progressBar').css('width', o.percent + '%');
+                }
+            })).start();
+        })
+    })
+</script>
+</body>
+</html>
