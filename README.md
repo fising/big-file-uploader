@@ -33,7 +33,7 @@ $('#button').click(function () {
 
 ### 选项
 ### blockSize
-文件块大小，单位 MB. 默认值为 10
+文件块大小，单位 MB。默认值为 10
 ### url
 服务端接口地址
 ### error
