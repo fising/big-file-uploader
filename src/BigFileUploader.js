@@ -39,7 +39,7 @@
             }
         }
 
-        BigFileUploader.prototype.postBlock = function (file, sum, count, index, start, end) {
+        BigFileUploader.prototype.postBlock = function (file, sum, fileSize, blockSize, blockCount, index, start, end) {
             var self = this;
 
             return function () {
@@ -49,7 +49,7 @@
                 fd.append('data', file.slice(start, end));
                 fd.append('name', file.name);
                 fd.append('sum', sum);
-                fd.append('count', count);
+                fd.append('count', blockCount);
                 fd.append('index', index);
 
                 return $.ajax({
@@ -58,22 +58,28 @@
                     data: fd,
                     async: true,
                     processData: false,
-                    contentType: false
+                    contentType: false,
+                    dataType: 'json',
+                    xhr: function () {
+                        var xhr = $.ajaxSettings.xhr();
+                        xhr.upload.onprogress = function (e) {
+                            var currentBlockSize = (index + 1 == blockCount || fileSize % blockSize == 0) ? fileSize % blockSize : blockSize;
+                            var percent = (parseFloat(index * blockSize / fileSize) + parseFloat(parseFloat(e.loaded / e.total) * currentBlockSize) / fileSize).toFixed(6);
+
+                            self.handleProgress({
+                                percent: percent * 100
+                            });
+                        };
+
+                        return xhr;
+                    }
                 }).done(function (data) {
-                    eval("var data = " + data);
                     if (typeof data.status === 'number' && data.status == 0) {
-                        var percent = index + 1 === count ? 1 : ((index + 1) / count);
-
-                        self.handleProgress({
-                            percent: parseFloat(percent * 100).toFixed(2)
-                        });
-
                         if (data.done) {
                             self.handleSuccess({
                                 message: '文件上传完成'
                             });
                         }
-
                         deferred.resolve();
                     } else {
                         self.handleError({
@@ -106,7 +112,7 @@
                 var start = blockSize * i,
                     end = Math.min(file.size, start + blockSize);
 
-                promise = promise.then(self.postBlock(file, sum, blockCount, i, start, end));
+                promise = promise.then(self.postBlock(file, sum, file.size, blockSize, blockCount, i, start, end));
             }
         }
 
