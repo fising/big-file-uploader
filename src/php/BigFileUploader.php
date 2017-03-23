@@ -46,9 +46,10 @@ class BigFileUploader
      * 保存上传的文件到一个目录
      *
      * @param string $dir
+     * @param string $dest
      * @return string
      */
-    public static function save($dir)
+    public static function save($dir, $dest = '')
     {
         $index = isset($_POST['index']) ? intval($_POST['index']) : 0;
         $count = isset($_POST['count']) ? intval($_POST['count']) : 0;
@@ -72,11 +73,25 @@ class BigFileUploader
         copy($_FILES['data']['tmp_name'], sys_get_temp_dir() . DIRECTORY_SEPARATOR . $sum . '-' . $index);
 
         if ($index + 1 == $count) {
+            $dest = empty($dest) ? $name : $dest;
+            $dest = $dir . DIRECTORY_SEPARATOR . $dest;
+
+            $fd = fopen($dest, 'x');
+            if (false === $fd && !flock($fd, LOCK_EX)) {
+                return json_encode([
+                    'status'  => 1,
+                    'message' => '打开文件失败'
+                ]);
+            }
+
             for ($i = 0; $i < $count; $i++) {
                 $tmp = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $sum . '-' . $i;
-                file_put_contents($dir . DIRECTORY_SEPARATOR . $name, file_get_contents($tmp), FILE_APPEND | LOCK_EX);
+                fwrite($fd, file_get_contents($tmp));
                 unlink($tmp);
             }
+
+            flock($fd, LOCK_UN);
+            fclose($fd);
         }
 
         return json_encode([
