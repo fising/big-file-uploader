@@ -76,6 +76,10 @@
                 }).done(function (data) {
                     if (typeof data.status === 'number' && data.status == 0) {
                         if (data.done) {
+                            self.handleProgress({
+                                percent: 100
+                            });
+
                             self.handleSuccess({
                                 message: '文件上传完成'
                             });

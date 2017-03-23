@@ -74,7 +74,7 @@ class BigFileUploader
         if ($index + 1 == $count) {
             for ($i = 0; $i < $count; $i++) {
                 $tmp = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $sum . '-' . $i;
-                file_put_contents($dir . DIRECTORY_SEPARATOR . $name, $tmp, FILE_APPEND | LOCK_EX);
+                file_put_contents($dir . DIRECTORY_SEPARATOR . file_get_contents($name), $tmp, FILE_APPEND | LOCK_EX);
                 unlink($tmp);
             }
         }
