@@ -69,13 +69,19 @@ class BigFileUploader
                 'message' => static::getErrorMessage($_FILES['data']['error'])
             ], JSON_UNESCAPED_UNICODE);
         }
+        
+        $dest = empty($dest) ? $name : $dest;
+        $dest = $dir . DIRECTORY_SEPARATOR . $dest;
+        if (file_exists($dest)) {
+            return json_encode([
+                'status'  => 2,
+                'message' => '同名文件已经存在'
+            ]);
+        }
 
         copy($_FILES['data']['tmp_name'], sys_get_temp_dir() . DIRECTORY_SEPARATOR . $sum . '-' . $index);
 
         if ($index + 1 == $count) {
-            $dest = empty($dest) ? $name : $dest;
-            $dest = $dir . DIRECTORY_SEPARATOR . $dest;
-
             $fd = fopen($dest, 'x');
             if (false === $fd && !flock($fd, LOCK_EX)) {
                 return json_encode([
