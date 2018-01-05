@@ -52,7 +52,7 @@
                 fd.append('count', blockCount);
                 fd.append('index', index);
 
-                return $.ajax({
+                $.ajax({
                     url: self.options.url,
                     type: 'POST',
                     data: fd,
