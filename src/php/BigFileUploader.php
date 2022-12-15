@@ -23,22 +23,16 @@ class BigFileUploader
             case UPLOAD_ERR_OK:
             case UPLOAD_ERR_FORM_SIZE:
                 return '文件块太大';
-                break;
             case UPLOAD_ERR_PARTIAL:
                 return '文件没有完整上传';
-                break;
             case UPLOAD_ERR_NO_FILE:
                 return '文件没有上传';
-                break;
             case UPLOAD_ERR_NO_TMP_DIR:
                 return '找不到临时文件夹';
-                break;
             case UPLOAD_ERR_CANT_WRITE:
                 return '文件写入失败';
-                break;
             default:
                 return '未知错误';
-                break;
         }
     }
 
