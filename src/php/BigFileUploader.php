@@ -4,7 +4,7 @@
  * Class BigFileUploader
  *
  * 文件分片上传的服务端代码。
- * 本代码仅用于功能展示，不可用于生产环境
+ * WARNING: 本代码仅用于功能展示，不可用于生产环境
  *
  * @author fising <fising@qq.com>
  * @license MIT
