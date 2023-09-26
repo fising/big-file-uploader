@@ -7,7 +7,7 @@
 - 引入 JS 文件
 
 ````html
-<script type="text/javascript" src="//code.jquery.com/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" src="//code.jquery.com/jquery-3.7.1.min.js"></script>
 <script type="text/javascript" src="../src/BigFileUploader.js"></script>
 ````
 
